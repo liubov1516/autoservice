@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Замовлення</title>
+</head>
+<body>
+<h1>Замовлення</h1>
+
+<form th:action="@{/orders}" th:object="${order}" method="post">
+    <input type="hidden" th:field="*{id}">
+
+    <p>Клієнт: <input type="text" th:field="*{clientName}">
+        <span style="color:red" th:errors="*{clientName}"></span></p>
+
+    <p>Марка/модель авто: <input type="text" th:field="*{carModel}">
+        <span style="color:red" th:errors="*{carModel}"></span></p>
+
+    <p>Держномер (формат AA1234BB): <input type="text" th:field="*{plateNumber}">
+        <span style="color:red" th:errors="*{plateNumber}"></span></p>
+
+    <p>Опис поломки: <input type="text" th:field="*{description}" size="50">
+        <span style="color:red" th:errors="*{description}"></span></p>
+
+    <p>Статус:
+        <select th:field="*{status}">
+            <option th:each="s : ${statuses}" th:value="${s}" th:text="${s}"></option>
+        </select>
+    </p>
+
+    <p>Ціна: <input type="number" step="0.01" th:field="*{price}">
+        <span style="color:red" th:errors="*{price}"></span></p>
+
+    <button type="submit">Зберегти</button>
+    <a th:href="@{/}">Скасувати</a>
+</form>
+</body>
+</html>

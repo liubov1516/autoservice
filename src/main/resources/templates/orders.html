@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Автосервіс</title>
+</head>
+<body>
+<h1>Автосервіс — замовлення на ремонт</h1>
+
+<p>
+    Користувач: <b th:text="${username}"></b>
+    (ролі: <span th:text="${roles}"></span>)
+    <form th:action="@{/logout}" method="post" style="display:inline">
+        <button type="submit">Вийти</button>
+    </form>
+</p>
+
+<p><a th:href="@{/orders/new}">+ Нове замовлення</a></p>
+
+<table border="1" cellpadding="6" cellspacing="0">
+    <tr>
+        <th>ID</th><th>Клієнт</th><th>Авто</th><th>Номер</th><th>Опис</th>
+        <th>Статус</th><th>Ціна</th><th>Створено</th><th>Дії</th>
+    </tr>
+    <tr th:each="o : ${orders}">
+        <td th:text="${o.id}"></td>
+        <td th:text="${o.clientName}"></td>
+        <td th:text="${o.carModel}"></td>
+        <td th:text="${o.plateNumber}"></td>
+        <td th:text="${o.description}"></td>
+        <td th:text="${o.status}"></td>
+        <td th:text="${o.price}"></td>
+        <td th:text="${o.createdAt}"></td>
+        <td>
+            <a th:href="@{/orders/{id}/edit(id=${o.id})}">Редагувати</a>
+            <form th:action="@{/orders/{id}/delete(id=${o.id})}" method="post" style="display:inline">
+                <button type="submit">Видалити (ADMIN)</button>
+            </form>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
