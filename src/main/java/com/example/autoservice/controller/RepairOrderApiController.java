@@ -29,7 +29,6 @@ public class RepairOrderApiController {
     // Точний літеральний шлях має пріоритет над /{id}, тому конфлікту з getOne() немає
     @GetMapping("/whoami")
     public Map<String, String> whoAmI(@CurrentMechanic String mechanicName) {
-        // резолвлене значення реально використовується в тілі методу, а не відкидається
         return Map.of("mechanic", mechanicName);
     }
 

@@ -6,8 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 // Тип 3: анотація для кастомного HandlerMethodArgumentResolver.
-// Параметр контролера, позначений нею, автоматично отримує ім'я механіка
-// із заголовка запиту X-Mechanic - без повторення цієї логіки в кожному методі.
+// Параметр контролера, позначений нею, автоматично отримує ім'я механіка із заголовка X-Mechanic.
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CurrentMechanic {

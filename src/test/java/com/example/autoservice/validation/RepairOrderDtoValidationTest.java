@@ -12,33 +12,25 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-// AC1: перевіряємо, що Bean Validation САМ знаходить і викликає PlateNumberValidator -
-// ми ніде в тесті вручну не створюємо jeго екземпляр, лише стандартний Validator.
 class RepairOrderDtoValidationTest {
 
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     @Test
     void validPlateNumberProducesNoViolations() {
-        // Arrange
         RepairOrderDto dto = sampleDto("AA1234BB");
 
-        // Act
         Set<ConstraintViolation<RepairOrderDto>> violations = validator.validate(dto);
 
-        // Assert
         assertThat(violations).isEmpty();
     }
 
     @Test
     void invalidPlateNumberProducesClearViolationMessage() {
-        // Arrange
         RepairOrderDto dto = sampleDto("12-AB-CD");
 
-        // Act
         Set<ConstraintViolation<RepairOrderDto>> violations = validator.validate(dto);
 
-        // Assert: повідомлення конкретне, а не загальне "invalid"
         assertThat(violations)
                 .extracting(ConstraintViolation::getMessage)
                 .anyMatch(message -> message.contains("державного номера"));

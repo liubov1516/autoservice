@@ -1,38 +1,25 @@
-# Звіт з лабораторних робіт
+# Автосервіс — лабораторні №1-4
 
-## Лабораторна робота 1
+Швидкий запуск:
+1. `docker compose up -d`   (Postgres + Keycloak; потрібно лише для лаби №1)
+2. Відкрити проєкт (pom.xml) в IntelliJ IDEA і запустити `AutoserviceApplication`
+3. UI:  http://localhost:8080  (admin/admin — роль ADMIN, user/user — роль USER)
+4. API: імпортувати `postman/Autoservice.postman_collection.json` у Postman
 
-| Завдання | Де виконано |
-|---|---|
-| Базовий CRUD-додаток | `controller/RepairOrderApiController.java`, `service/RepairOrderService.java`, `repository/RepairOrderRepository.java`, `mapper/RepairOrderMapper.java` |
-| Схема БД керується міграціями | `src/main/resources/db/changelog/` |
-| Базовий UI | `controller/OrderPageController.java`, `src/main/resources/templates/` |
-| OIDC для UI-користувачів | `config/SecurityConfig.java` (uiSecurity) |
-| JWT для прямих API-запитів | `config/SecurityConfig.java` (apiSecurity) |
-| Обмеження на рівні SecurityFilterChain | `config/SecurityConfig.java` |
-| Обмеження через `@PreAuthorize` | `service/RepairOrderService.java` (метод `delete`) |
-| Готова колекція запитів | `postman/Autoservice.postman_collection.json` |
+Keycloak: http://localhost:8180 (admin/admin), realm `autoservice` імпортується автоматично.
 
-## Лабораторна робота 2
+## Лабораторна №2 — Unit-тести
+Запуск усіх тестів (Docker і Keycloak для цього НЕ потрібні): `mvn test`
+- `config/KeycloakRolesTest` — тест без моків.
+- `service/RepairOrderServiceTest` — тест з моками (Mockito).
 
-| Завдання | Де виконано |
-|---|---|
-| Тест зі звичайним входом (AC1) | `config/KeycloakRolesTest.java`, `service/RepairOrderServiceTest.java` |
-| Тест на невалідний/граничний вхід (AC2) | `service/RepairOrderServiceTest.java` (`createNullDtoThrowsIllegalArgumentException`, `createNegativePriceThrowsIllegalArgumentException` та інші) |
-| Залежності замоковано, без Spring-контексту (AC3) | `service/RepairOrderServiceTest.java` (`@Mock`/`@InjectMocks`) |
-| Доказ мутаційного тестування (AC4) | `service/RepairOrderService.java` (метод `delete`) — перевіряється вручну перед захистом |
-| Тест без БД/мережі/часу (AC5) | обидва тестові класи |
-| Назва методу й структура Arrange-Act-Assert (AC6) | усі тестові класи |
-| Перевірка через `verify()`/`ArgumentCaptor` (AC7) | `service/RepairOrderServiceTest.java` |
-| AC1+AC2 для кожного публічного методу (AC8) | `service/RepairOrderServiceTest.java` |
+## Лабораторна №3 — Кастомні анотації
+- `validation/ValidPlateNumber` + `PlateNumberValidator` — Bean Validation constraint.
+- `web/PostMappingCreated` — композитна анотація (@PostMapping + @ResponseStatus(CREATED)).
+- `web/CurrentMechanic` + `CurrentMechanicArgumentResolver` + `WebConfig` — MVC argument resolver.
 
-## Лабораторна робота 3
-
-| Завдання | Де виконано |
-|---|---|
-| Тип 1: Bean Validation Constraint (`@ValidPlateNumber`) | `validation/ValidPlateNumber.java`, `validation/PlateNumberValidator.java`, застосовано в `dto/RepairOrderDto.java` |
-| Тип 2: Композитна анотація (`@PostMappingCreated`) | `web/PostMappingCreated.java`, застосовано в `controller/RepairOrderApiController.java` |
-| Тип 3: MVC argument resolver (`@CurrentMechanic`) | `web/CurrentMechanic.java`, `web/CurrentMechanicArgumentResolver.java`, `web/WebConfig.java`, застосовано в `GET /api/orders/whoami` |
-| AC1–AC3 (валідатор) | `validation/RepairOrderDtoValidationTest.java` |
-| AC4–AC5 (композитна анотація) | `web/RepairOrderApiControllerWebMvcTest.java` |
-| AC6–AC8 (argument resolver) | `web/CurrentMechanicArgumentResolverTest.java`, `web/RepairOrderApiControllerWebMvcTest.java` |
+## Лабораторна №4 — AOP
+- `aop/TrackExecutionTime` + `ExecutionTimeAspect` (Around) — вимірює час виконання методу.
+- `aop/AuditCreation` + `AuditCreationAspect` (AfterReturning) — журнал аудиту створення замовлень.
+- `aop/PreventEditingCompletedOrder` + `LockCompletedOrderAspect` (Before) — блокує редагування завершених замовлень.
+- `aop/SelfInvocationDemoTest` — демонстрація self-invocation: зовнішній виклик активує аспект, виклик через `this.` — ні.

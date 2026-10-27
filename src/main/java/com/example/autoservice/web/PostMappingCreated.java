@@ -12,13 +12,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 // Тип 2: композитна (мета-)анотація.
-// Об'єднує POST-маппінг і @ResponseStatus(CREATED), які в коді завжди йдуть разом
-// для ендпоінтів створення ресурсу - той самий підхід, що й у @SpringBootApplication.
-//
-// Важливо: тут не можна мета-анотувати через саму @PostMapping, бо її @Target = METHOD,
-// а методом-міткою не можна позначати оголошення ІНШОЇ анотації (потрібен @Target(TYPE)).
-// Тому використовуємо @RequestMapping(method = POST) - те саме, з чого всередині
-// Spring зроблена і сама @PostMapping, але її @Target уже включає TYPE.
+// Об'єднує POST-маппінг і @ResponseStatus(CREATED).
+// Увага: мета-анотувати можна лише анотацією, чий @Target включає TYPE (а не METHOD, як у @PostMapping),
+// тому тут використано @RequestMapping(method = POST) - з неї й зроблена сама @PostMapping.
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @RequestMapping(method = RequestMethod.POST)

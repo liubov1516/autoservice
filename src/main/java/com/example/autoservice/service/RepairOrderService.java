@@ -1,5 +1,8 @@
 package com.example.autoservice.service;
 
+import com.example.autoservice.aop.AuditCreation;
+import com.example.autoservice.aop.PreventEditingCompletedOrder;
+import com.example.autoservice.aop.TrackExecutionTime;
 import com.example.autoservice.dto.RepairOrderDto;
 import com.example.autoservice.entity.OrderStatus;
 import com.example.autoservice.entity.RepairOrder;
@@ -36,6 +39,8 @@ public class RepairOrderService {
         return mapper.toDto(getEntity(id));
     }
 
+    // AOP, аспект 2 (AfterReturning): після успішного створення записує подію в журнал аудиту
+    @AuditCreation
     @Transactional
     public RepairOrderDto create(RepairOrderDto dto) {
         if (dto == null) {
@@ -49,6 +54,8 @@ public class RepairOrderService {
         return mapper.toDto(repository.save(entity));
     }
 
+    // AOP, аспект 3 (Before): забороняє редагування вже завершених (DONE) замовлень
+    @PreventEditingCompletedOrder
     @Transactional
     public RepairOrderDto update(Long id, RepairOrderDto dto) {
         RepairOrder entity = getEntity(id);
@@ -71,6 +78,23 @@ public class RepairOrderService {
             result.put(status.name(), repository.countByStatus(status));
         }
         return result;
+    }
+
+    // AOP, аспект 1 (Around): вимірює час виконання. Викликана ЗЗОВНІ (через проксі-біна) -
+    // аспект спрацьовує, запис про тривалість з'являється в ExecutionTimeRecorder.
+    @TrackExecutionTime(warnThresholdMs = 100)
+    @Transactional(readOnly = true)
+    public List<RepairOrderDto> findAllTracked() {
+        return findAll();
+    }
+
+    // Навмисна демонстрація self-invocation (Лаба №4, обов'язкова частина 2):
+    // виклик "this.findAllTracked()" іде напряму на реальний об'єкт, минаючи Spring AOP-проксі,
+    // тому ExecutionTimeAspect тут НЕ спрацює. Це свідомий приклад для лабораторної,
+    // а не помилка, яку треба виправляти.
+    @Transactional(readOnly = true)
+    public List<RepairOrderDto> findAllViaSelfInvocation() {
+        return this.findAllTracked();
     }
 
     private RepairOrder getEntity(Long id) {

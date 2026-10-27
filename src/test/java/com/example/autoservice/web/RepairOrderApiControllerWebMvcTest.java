@@ -20,11 +20,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-// Безпеку тут вимикаємо (addFilters = false), бо перевіряємо лише MVC-поведінку:
-// маршрутизацію, статус-коди й роботу резолвера - а не автентифікацію.
-// excludeAutoConfiguration прибирає авто-конфігурацію OAuth2-клієнта: інакше Spring
-// під час старту тестового контексту намагається піти по мережі на Keycloak-issuer
-// (localhost:8180), якого в unit-тестах не запущено, і падає з Connection refused.
+// Безпеку тут вимикаємо (addFilters = false). excludeAutoConfiguration прибирає
+// автоконфігурацію OAuth2-клієнта, яка інакше під час старту тестового контексту
+// намагається піти в мережу на Keycloak-issuer і падає з Connection refused.
 @WebMvcTest(controllers = RepairOrderApiController.class,
         excludeAutoConfiguration = OAuth2ClientAutoConfiguration.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -36,11 +34,8 @@ class RepairOrderApiControllerWebMvcTest {
     @MockBean
     private RepairOrderService service;
 
-    // ---------- Тип 2, AC5: композитна анотація дає ту саму поведінку, що й окремі ----------
-
     @Test
     void createEndpointReturnsCreatedStatusJustLikePostMappingPlusResponseStatus() throws Exception {
-        // Arrange
         RepairOrderDto response = new RepairOrderDto();
         response.setId(1L);
         response.setClientName("Іван Петренко");
@@ -58,18 +53,14 @@ class RepairOrderApiControllerWebMvcTest {
                 }
                 """;
 
-        // Act + Assert: той самий результат, який дав би @PostMapping + @ResponseStatus(CREATED) окремо
         mockMvc.perform(post("/api/orders")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isCreated());
     }
 
-    // ---------- Тип 3, AC8: резолвлене значення реально використовується в тілі методу ----------
-
     @Test
     void whoAmIEndpointUsesResolvedMechanicNameFromHeaderInResponseBody() throws Exception {
-        // Act + Assert
         mockMvc.perform(get("/api/orders/whoami").header("X-Mechanic", "Олег Коваль"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.mechanic").value("Олег Коваль"));
@@ -77,7 +68,6 @@ class RepairOrderApiControllerWebMvcTest {
 
     @Test
     void whoAmIEndpointWithoutHeaderReturnsDefaultValue() throws Exception {
-        // Act + Assert
         mockMvc.perform(get("/api/orders/whoami"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.mechanic").value("unknown"));

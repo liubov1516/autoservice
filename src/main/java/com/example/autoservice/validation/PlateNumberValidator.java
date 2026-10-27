@@ -6,7 +6,7 @@ import jakarta.validation.ConstraintValidatorContext;
 import java.util.regex.Pattern;
 
 // Клас-валідатор для @ValidPlateNumber.
-// Spring/Bean Validation знаходить і викликає цей клас автоматично - через validatedBy у анотації.
+// Bean Validation знаходить і викликає цей клас автоматично - через validatedBy у анотації.
 public class PlateNumberValidator implements ConstraintValidator<ValidPlateNumber, String> {
 
     // 2 літери, 4 цифри, 2 літери (латиниця), наприклад AA1234BB
@@ -14,7 +14,6 @@ public class PlateNumberValidator implements ConstraintValidator<ValidPlateNumbe
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        // порожнє значення тут вважаємо валідним - за обов'язковість поля відповідає @NotBlank
         if (value == null || value.isBlank()) {
             return true;
         }
