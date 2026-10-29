@@ -23,3 +23,10 @@ Keycloak: http://localhost:8180 (admin/admin), realm `autoservice` імпорт�
 - `aop/AuditCreation` + `AuditCreationAspect` (AfterReturning) — журнал аудиту створення замовлень.
 - `aop/PreventEditingCompletedOrder` + `LockCompletedOrderAspect` (Before) — блокує редагування завершених замовлень.
 - `aop/SelfInvocationDemoTest` — демонстрація self-invocation: зовнішній виклик активує аспект, виклик через `this.` — ні.
+
+## Лабораторна №5 — Асинхронна обробка
+- `async/AsyncConfig` — явний `ThreadPoolTaskExecutor` (core=2, max=4, queue=10, префікс `autoservice-async-`) + `AsyncUncaughtExceptionHandler`.
+- `async/OrderNotificationService` — три повільні операції (@Async, ~800/800/500 мс): лист клієнту, PDF-рахунок, виклик постачальника (fire-and-forget).
+- `async/OrderNotificationOrchestrator` — запускає два незалежні виклики, об'єднує через `thenCombine`, обробляє збої через `exceptionally`.
+- `controller/OrderNotificationController` — `POST /api/orders/{id}/notify`: обмежений тайм-аут очікування (`future.get(3, TimeUnit.SECONDS)`), явна обробка `TaskRejectedException` (503, а не 500).
+- `async/ExecutorOverflowTest` — демонстрація переповнення виконавця (`TaskRejectedException`).

@@ -17,7 +17,7 @@
     <name>autoservice</name>
 
     <properties>
-        <java.version>17</java.version>
+        <java.version>21</java.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
     </properties>
 
@@ -68,7 +68,6 @@
             <artifactId>mapstruct</artifactId>
             <version>${mapstruct.version}</version>
         </dependency>
-
         <!-- Unit/MVC-тестування: JUnit 5 + Mockito + AssertJ + MockMvc -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

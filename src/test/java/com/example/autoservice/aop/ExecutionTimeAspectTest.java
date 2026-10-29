@@ -57,13 +57,13 @@ class ExecutionTimeAspectTest {
     }
 
     private TrackExecutionTime annotationFrom(Class<?> type, String methodName) throws NoSuchMethodException {
-        return type.getDeclaredMethod(methodName).getAnnotation(TrackExecutionTime.class);
+        return type.getMethod(methodName).getAnnotation(TrackExecutionTime.class);
     }
 
     // Допоміжний клас лише для отримання реального екземпляра анотації через рефлексію
     static class SampleTarget {
         @TrackExecutionTime(warnThresholdMs = 50)
-        public void fast() {
+        void fast() {
         }
     }
 }
