@@ -41,7 +41,9 @@ class AsyncBehaviorTest {
     @Qualifier(AsyncConfig.EXECUTOR_BEAN_NAME)
     private ThreadPoolTaskExecutor executor;
 
-    // Контекст спільний для всіх тестів. Перед кожним тестом чекаємо, поки пул звільниться.
+    // Контекст спільний для всіх тестів, тому "хвости" завдань з попереднього тесту
+    // (наприклад, ще не завершений лист з тесту про тайм-аут) займали потоки пулу
+    // і псували вимірювання часу. Перед кожним тестом чекаємо, поки пул звільниться.
     @BeforeEach
     void waitUntilExecutorIsIdle() {
         await().atMost(Duration.ofSeconds(5)).until(() ->
@@ -119,7 +121,7 @@ class AsyncBehaviorTest {
 
     @Test
     void voidAsyncMethodFailureIsCapturedByUncaughtExceptionHandlerNotSwallowed() {
-        // Arrange: немає моделі авто, notifyPartsSupplier кине виняток
+        // Arrange: немає моделі авто -> notifyPartsSupplier кине виняток
         RepairOrderDto order = sampleOrder(6L, "Петро Гриценко", null);
 
         // Act

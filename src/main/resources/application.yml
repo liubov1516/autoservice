@@ -14,6 +14,17 @@ spring:
       ddl-auto: none
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
+  quartz:
+    job-store-type: jdbc              # розклад зберігається в БД і переживає перезапуск
+    jdbc:
+      initialize-schema: never        # таблиці QRTZ_* створює Liquibase, а не Spring Boot
+    overwrite-existing-jobs: true     # при новому деплої оновлюємо збережені завдання й тригери
+    wait-for-jobs-to-complete-on-shutdown: true
+    properties:
+      org.quartz.scheduler.instanceName: autoservice-scheduler
+      org.quartz.threadPool.threadCount: 3
+      org.quartz.jobStore.driverDelegateClass: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
+      org.quartz.jobStore.useProperties: false
   security:
     oauth2:
       client:

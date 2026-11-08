@@ -34,6 +34,14 @@ public class RepairOrder {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
+    // коли надіслано лист-підтвердження (null = ще не надсилали) - для завдання Quartz
+    @Column(name = "confirmation_sent_at")
+    private LocalDateTime confirmationSentAt;
+
+    // коли востаннє надсилали нагадування - для завдання Quartz
+    @Column(name = "last_reminder_at")
+    private LocalDateTime lastReminderAt;
+
     @PrePersist
     void onCreate() {
         if (createdAt == null) {
@@ -64,4 +72,10 @@ public class RepairOrder {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public LocalDateTime getConfirmationSentAt() { return confirmationSentAt; }
+    public void setConfirmationSentAt(LocalDateTime confirmationSentAt) { this.confirmationSentAt = confirmationSentAt; }
+
+    public LocalDateTime getLastReminderAt() { return lastReminderAt; }
+    public void setLastReminderAt(LocalDateTime lastReminderAt) { this.lastReminderAt = lastReminderAt; }
 }

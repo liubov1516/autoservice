@@ -1,0 +1,16 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002-add-notification-columns
+      author: student
+      changes:
+        - addColumn:
+            tableName: repair_orders
+            columns:
+              # коли клієнту надіслано лист-підтвердження (NULL = ще не надсилали)
+              - column:
+                  name: confirmation_sent_at
+                  type: TIMESTAMP
+              # коли востаннє надсилали нагадування про зависле замовлення
+              - column:
+                  name: last_reminder_at
+                  type: TIMESTAMP

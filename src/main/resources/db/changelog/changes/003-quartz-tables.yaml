@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003-quartz-tables
+      author: student
+      changes:
+        # Таблиці QRTZ_* створює саме Liquibase; Spring Boot налаштовано
+        # spring.quartz.jdbc.initialize-schema=never, щоб він їх не чіпав
+        - sqlFile:
+            path: db/changelog/changes/quartz_tables_postgres.sql
+            splitStatements: true
+            endDelimiter: ";"
+            stripComments: true
+      rollback:
+        - sql:
+            sql: >
+              DROP TABLE IF EXISTS QRTZ_FIRED_TRIGGERS, QRTZ_PAUSED_TRIGGER_GRPS, QRTZ_SCHEDULER_STATE,
+              QRTZ_LOCKS, QRTZ_SIMPLE_TRIGGERS, QRTZ_CRON_TRIGGERS, QRTZ_SIMPROP_TRIGGERS,
+              QRTZ_BLOB_TRIGGERS, QRTZ_TRIGGERS, QRTZ_JOB_DETAILS, QRTZ_CALENDARS

@@ -1,3 +1,7 @@
 databaseChangeLog:
   - include:
       file: db/changelog/changes/001-create-repair-orders.yaml
+  - include:
+      file: db/changelog/changes/002-add-notification-columns.yaml
+  - include:
+      file: db/changelog/changes/003-quartz-tables.yaml

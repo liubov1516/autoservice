@@ -1,4 +1,4 @@
-# Автосервіс — лабораторні №1-5
+# Автосервіс — лабораторні №1-6
 
 Швидкий запуск:
 1. `docker compose up -d`   (Postgres + Keycloak; потрібно лише для лаби №1)
@@ -30,3 +30,10 @@ Keycloak: http://localhost:8180 (admin/admin), realm `autoservice` імпорт�
 - `async/OrderNotificationOrchestrator` — запускає два незалежні виклики, об'єднує через `thenCombine`, обробляє збої через `exceptionally`.
 - `controller/OrderNotificationController` — `POST /api/orders/{id}/notify`: обмежений тайм-аут очікування (`future.get(3, TimeUnit.SECONDS)`), явна обробка `TaskRejectedException` (503, а не 500).
 - `async/ExecutorOverflowTest` — демонстрація переповнення виконавця (`TaskRejectedException`).
+
+## Лабораторна №6 — Quartz Scheduler
+- `db/changelog/changes/quartz_tables_postgres.sql` + `003-quartz-tables.yaml` — таблиці `QRTZ_*` створює Liquibase (`initialize-schema: never` у `application.yml`).
+- `scheduling/QuartzConfig` — один `@Configuration` з двома `JobDetail` і трьома `Trigger` (завдання нагадувань має два тригери).
+- `scheduling/OrderConfirmationJob`, `StaleOrderReminderJob` — "легкі" завдання (читають `JobDataMap`, роблять один виклик сервісу).
+- `scheduling/ScheduledOrderTasksService` — уся логіка, `@Transactional`, ідемпотентна.
+- `scheduling/JobFailureHandler` — стратегії збою: обмежені повтори / фіксація помилки й очікування наступного запуску.

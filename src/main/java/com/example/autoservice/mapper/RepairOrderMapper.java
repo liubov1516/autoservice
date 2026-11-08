@@ -14,9 +14,13 @@ public interface RepairOrderMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "confirmationSentAt", ignore = true)
+    @Mapping(target = "lastReminderAt", ignore = true)
     RepairOrder toEntity(RepairOrderDto dto);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "confirmationSentAt", ignore = true)
+    @Mapping(target = "lastReminderAt", ignore = true)
     void updateEntity(RepairOrderDto dto, @MappingTarget RepairOrder entity);
 }
